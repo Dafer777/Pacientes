@@ -26,10 +26,10 @@ namespace Pacientes
             //crear el menu para mostrar al usuario
             //Console.Clear(); //permite limpiar la consola
             Console.WriteLine("Seleccion la operación a realizar: ");
-            Console.WriteLine("1. Registrar nuevo paciente");
-            Console.WriteLine("2. Actualizar datos del paciente");
-            Console.WriteLine("3. Eliminar datos del paciente");
-            Console.WriteLine("4. Mostrar listado de pacientes");
+            Console.WriteLine("1. Registrar nuevo estudiante");
+            Console.WriteLine("2. Actualizar datos de estudiante");
+            Console.WriteLine("3. Eliminar datos de estudiante");
+            Console.WriteLine("4. Mostrar listado de estudiantes");
             Console.WriteLine("5. Salir");
             Console.Write("\nOpcion: ");
 
@@ -39,13 +39,21 @@ namespace Pacientes
                     register(); //llamado al metodo registrar
                     return true;
                 case "2":
-                 
+                    updateData(); //llamdo al metodo para actualizar
+                    Console.ReadKey();
                     return true;
                 case "3":
-               
+                    deleteData();//lamado al metodo eliminar
+                    Console.ReadKey();
                     return true;
                 case "4":
-                   
+                    //mostrar el contenido del archivo
+                    Console.WriteLine("LISTADO DE ESTUDIANTES");
+                    foreach (KeyValuePair<object, object> data in readFile())
+                    {
+                        Console.WriteLine("{0}: {1}", data.Key, data.Value);
+                    }
+                    Console.ReadKey();
                     return true;
                 case "5":
                     return false;
@@ -57,14 +65,14 @@ namespace Pacientes
         //metodo para obtener la ruta del archivo
         private static string getPath()
         {
-            string path = @"D:\ejemplo\registros.txt";
+            string path = @"E:\ejemplo\registros.txt";
             return path;
         }
 
         //metodo para registrar datos en el archivo
         private static void register()
         {
-            string consulta;
+            string consulta = Console.ReadLine();
             //solicitar los datos del estudiante
             Console.WriteLine("DATOS DE LA PERSONA");
             Console.Write("Nombre Completo: ");
@@ -83,20 +91,14 @@ namespace Pacientes
             Console.WriteLine("Desea programar cita: ");
             Console.WriteLine("1. Si");
             Console.WriteLine("2. No");
-            string i = Console.ReadLine();
-            if (i == "si")
+            int i = Convert.ToInt32(Console.ReadLine());
+            if (i == 1)
             {
                 Console.WriteLine("Digite el dia de la cita: ");
-                consulta = Console.ReadLine();
+                string Consulta = Console.ReadLine();
 
+                Consulta = consulta;
             }
-            else
-            {
-                consulta = "No tiene cita la persona";
-                Console.WriteLine("No se le a asignado su cita");
-            }
-
-
 
             //crear el archivo, uso de StreamWriter para escribir el archivo
             using (StreamWriter sw = File.AppendText(getPath()))
@@ -106,11 +108,121 @@ namespace Pacientes
                 sw.WriteLine("Registro medico");
                 sw.WriteLine("{0}; {1}", Fecha, Examenes, Les);
                 sw.WriteLine("Fecha de su cita");
-                sw.WriteLine(consulta);
+                sw.WriteLine("{0}; {1}", consulta);
                 sw.Close();
             }
+        }
 
-            Console.ReadKey();
+        //metodo para leer el contenido del archivo
+        private static Dictionary<object, object> readFile()
+        {
+            //declarar el diccionario
+            Dictionary<object, object> listData = new Dictionary<object, object>();
+
+            //uso del StreamReader para leer el archivo
+            using (var reader = new StreamReader(getPath()))
+            {
+                //variable para almacenar el contenido del archivo
+                string lines;
+
+                while ((lines = reader.ReadLine()) != null) //mientras no se encuentre una linea vacia se ejecuta el ciclo
+                {
+                    string[] keyvalue = lines.Split(';');
+                    if (keyvalue.Length == 2)
+                    {
+                        listData.Add(keyvalue[0], keyvalue[1]);
+                    }
+                }
+
+            }
+
+            //retornar el diccionario
+            return listData;
+        }
+
+        //metodo para buscar por clave
+        private static bool search(string name)
+        {
+            if (!readFile().ContainsKey(name))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        //metodo para actualizar
+        private static void updateData()
+        {
+            //solicitar el elemnto a modificar
+            Console.Write("Escriba el nombre del estudiante a actualizar: ");
+            var name = Console.ReadLine();
+
+            //realizar la busqueda
+            if (search(name))
+            {
+                Console.WriteLine("El registro existe!");
+                Console.Write("Nueva edad: ");
+                var newAge = Console.ReadLine();
+
+                //declarar un diccionario
+                Dictionary<object, object> temp = new Dictionary<object, object>();
+                temp = readFile();
+
+                temp[name] = newAge; //actualizar el valor
+                Console.WriteLine("El registro ha sido actualizado!");
+                File.Delete(getPath()); //eliminamos archivos y posteriormente lo volvemos a crear
+
+                using (StreamWriter sw = File.AppendText(getPath()))
+                {
+                    //leer diccionario temporal y almacenar los elementos en el archivo
+                    foreach (KeyValuePair<object, object> values in temp)
+                    {
+                        sw.WriteLine("{0}; {1}", values.Key, values.Value);
+                        // sw.Close();
+                    }
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("El registro no se encontro!");
+            }
+        }
+
+        private static void deleteData()
+        {
+            //solicitar el elemnto a eliminar
+            Console.Write("Escriba el nombre del estudiante a eliminar: ");
+            var name = Console.ReadLine();
+
+            //realizar la busqueda
+            if (search(name))
+            {
+
+
+                //declarar un diccionario
+                Dictionary<object, object> temp = new Dictionary<object, object>();
+                temp = readFile();
+
+                temp.Remove(name);
+                Console.WriteLine("El registro ha sido eliminado!");
+                File.Delete(getPath()); //eliminamos archivos y posteriormente lo volvemos a crear
+
+                using (StreamWriter sw = File.AppendText(getPath()))
+                {
+                    //leer diccionario temporal y almacenar los elementos en el archivo
+                    foreach (KeyValuePair<object, object> values in temp)
+                    {
+                        sw.WriteLine("{0}; {1}", values.Key, values.Value);
+                        // sw.Close();
+                    }
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("El registro no se encontro!");
+            }
         }
     }
 }
