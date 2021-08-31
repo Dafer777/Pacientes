@@ -26,10 +26,10 @@ namespace Pacientes
             //crear el menu para mostrar al usuario
             //Console.Clear(); //permite limpiar la consola
             Console.WriteLine("Seleccion la operación a realizar: ");
-            Console.WriteLine("1. Registrar nuevo estudiante");
-            Console.WriteLine("2. Actualizar datos de estudiante");
-            Console.WriteLine("3. Eliminar datos de estudiante");
-            Console.WriteLine("4. Mostrar listado de estudiantes");
+            Console.WriteLine("1. Registrar nuevo paciente");
+            Console.WriteLine("2. Actualizar datos de paciente");
+            Console.WriteLine("3. Eliminar datos de paciente");
+            Console.WriteLine("4. Mostrar listado de paciente");
             Console.WriteLine("5. Salir");
             Console.Write("\nOpcion: ");
 
@@ -48,7 +48,7 @@ namespace Pacientes
                     return true;
                 case "4":
                     //mostrar el contenido del archivo
-                    Console.WriteLine("LISTADO DE ESTUDIANTES");
+                    Console.WriteLine("LISTADO DE PACIENTES");
                     foreach (KeyValuePair<object, object> data in readFile())
                     {
                         Console.WriteLine("{0}: {1}", data.Key, data.Value);
@@ -65,22 +65,22 @@ namespace Pacientes
         //metodo para obtener la ruta del archivo
         private static string getPath()
         {
-            string path = @"E:\ejemplo\registros.txt";
+            string path = @"D:\ejemplo\registros.txt";
             return path;
         }
 
         //metodo para registrar datos en el archivo
         private static void register()
         {
-            string consulta = Console.ReadLine();
-            //solicitar los datos del estudiante
+            string consulta;
+            
+            //solicitar los datos del paciente
             Console.WriteLine("DATOS DE LA PERSONA");
             Console.Write("Nombre Completo: ");
             string fullname = Console.ReadLine();
             Console.Write("Edad: ");
             int age = Convert.ToInt32(Console.ReadLine());
-            Console.Write("Telefono: ");
-            int Tel = Convert.ToInt32(Console.ReadLine());
+           
             Console.WriteLine("REGISTRO MEDICO DE LA PERSONA ");
             Console.WriteLine("Ultima fecha de sus examenes: ");
             string Fecha = Console.ReadLine(); //ultima fecha de examenes medicos
@@ -94,47 +94,64 @@ namespace Pacientes
             int i = Convert.ToInt32(Console.ReadLine());
             if (i == 1)
             {
+               
                 Console.WriteLine("Digite el dia de la cita: ");
-                string Consulta = Console.ReadLine();
-
-                Consulta = consulta;
+                consulta = Console.ReadLine();  
             }
+            else
+            {
+                consulta = "No tiene cita la persona";
+                Console.WriteLine("No se le a asignado su cita");
+            }
+
 
             //crear el archivo, uso de StreamWriter para escribir el archivo
             using (StreamWriter sw = File.AppendText(getPath()))
             {
-                sw.WriteLine("Datos Personales");
-                sw.WriteLine("{0}; {1}", fullname, age, Tel);
-                sw.WriteLine("Registro medico");
+
+               
+                sw.WriteLine("{0}; {1}", fullname, age);
+              
                 sw.WriteLine("{0}; {1}", Fecha, Examenes, Les);
-                sw.WriteLine("Fecha de su cita");
-                sw.WriteLine("{0}; {1}", consulta);
+                
+                sw.WriteLine(consulta);
                 sw.Close();
+
+               
             }
         }
 
         //metodo para leer el contenido del archivo
-        private static Dictionary<object, object> readFile()
+        private static Dictionary<object, object > readFile()
         {
             //declarar el diccionario
             Dictionary<object, object> listData = new Dictionary<object, object>();
+            Dictionary<object, object> list = new Dictionary<object, object>();
 
             //uso del StreamReader para leer el archivo
             using (var reader = new StreamReader(getPath()))
             {
                 //variable para almacenar el contenido del archivo
-                string lines;
+                string lines;   
 
                 while ((lines = reader.ReadLine()) != null) //mientras no se encuentre una linea vacia se ejecuta el ciclo
                 {
                     string[] keyvalue = lines.Split(';');
                     if (keyvalue.Length == 2)
                     {
+                        
                         listData.Add(keyvalue[0], keyvalue[1]);
+                    
+                       
                     }
-                }
 
+                
+
+
+
+                }
             }
+
 
             //retornar el diccionario
             return listData;

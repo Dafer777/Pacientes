@@ -1,0 +1,7 @@
+C:\Users\50370\source\repos\Pacientes\Pacientes\bin\Debug\Pacientes.exe.config
+C:\Users\50370\source\repos\Pacientes\Pacientes\bin\Debug\Pacientes.exe
+C:\Users\50370\source\repos\Pacientes\Pacientes\bin\Debug\Pacientes.pdb
+C:\Users\50370\source\repos\Pacientes\Pacientes\obj\Debug\Pacientes.csproj.AssemblyReference.cache
+C:\Users\50370\source\repos\Pacientes\Pacientes\obj\Debug\Pacientes.csproj.CoreCompileInputs.cache
+C:\Users\50370\source\repos\Pacientes\Pacientes\obj\Debug\Pacientes.exe
+C:\Users\50370\source\repos\Pacientes\Pacientes\obj\Debug\Pacientes.pdb
